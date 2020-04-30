@@ -1,5 +1,6 @@
 import pygame
 import time
+from random import randint
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -9,11 +10,19 @@ pygame.init()
 surfaceWidth = 800
 surfaceHeight = 500
 
+imageHeight = 43
+imageWidth = 100
+
 surface = pygame.display.set_mode((surfaceWidth, surfaceHeight))
 pygame.display.set_caption("flappy-bird")
 clock = pygame.time.Clock()
 
-img = pygame.image.load("images/bird.png")
+bird_img = pygame.image.load("images/bird.png")
+
+
+def blocks(x_block, y_block, block_width, block_height, gap):
+    pygame.draw.rect(surface, white, [x_block, y_block, block_width, block_height])
+    pygame.draw.rect(surface, white, [x_block, y_block+block_height+gap, block_width, block_height])
 
 
 def replay_or_quit():
@@ -61,13 +70,21 @@ def gameOver():
 
 
 def bird(x, y, image):
-    surface.blit(img, (x, y))
+    surface.blit(bird_img, (x, y))
 
 
 def main():
     x = 150
     y = 200
     y_move = 0
+
+    x_block = surfaceWidth
+    y_block = 0
+
+    block_width = 75
+    block_height = randint(0, surfaceHeight)
+    gap = imageHeight * 3
+    block_move = 3
 
     game_over = False
 
@@ -87,7 +104,10 @@ def main():
         y += y_move
 
         surface.fill(black)
-        bird(x, y, img)
+        bird(x, y, bird_img)
+
+        blocks(x_block, y_block, block_width, block_height, gap)
+        x_block -= block_move
 
         if y > surfaceHeight - 40 or y < 0:
             gameOver()
