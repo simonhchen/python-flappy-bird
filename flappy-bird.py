@@ -4,14 +4,16 @@ from random import randint
 
 black = (0, 0, 0)
 white = (255, 255, 255)
+green = (34, 139, 34)
+sky_blue = (0, 204, 255)
 
 pygame.init()
 
 surfaceWidth = 800
 surfaceHeight = 500
 
-imageHeight = 43
-imageWidth = 100
+imageHeight = 24
+imageWidth = 34
 
 surface = pygame.display.set_mode((surfaceWidth, surfaceHeight))
 pygame.display.set_caption("flappy-bird")
@@ -21,8 +23,8 @@ bird_img = pygame.image.load("images/bird.png")
 
 
 def blocks(x_block, y_block, block_width, block_height, gap):
-    pygame.draw.rect(surface, white, [x_block, y_block, block_width, block_height])
-    pygame.draw.rect(surface, white, [x_block, y_block+block_height+gap, block_width, block_height])
+    pygame.draw.rect(surface, green, [x_block, y_block, block_width, block_height])
+    pygame.draw.rect(surface, green, [x_block, y_block+block_height+gap, block_width, surfaceHeight])
 
 
 def replay_or_quit():
@@ -82,7 +84,7 @@ def main():
     y_block = 0
 
     block_width = 75
-    block_height = randint(0, surfaceHeight)
+    block_height = randint(0, (surfaceWidth / 2))
     gap = imageHeight * 3
     block_move = 3
 
@@ -103,7 +105,7 @@ def main():
 
         y += y_move
 
-        surface.fill(black)
+        surface.fill(sky_blue)
         bird(x, y, bird_img)
 
         blocks(x_block, y_block, block_width, block_height, gap)
@@ -111,6 +113,10 @@ def main():
 
         if y > surfaceHeight - 40 or y < 0:
             gameOver()
+
+        if x_block < (-1*block_width):
+            x_block = surfaceWidth
+            block_height = randint(0, (surfaceHeight / 2))
 
         pygame.display.update()
         clock.tick(60)
