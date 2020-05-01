@@ -1,10 +1,20 @@
 import pygame
 import time
-from random import randint
+from random import randint, randrange
+
+
+sunset = (253, 72, 47)
 
 white = (255, 255, 255)
 green = (34, 139, 34)
 sky_blue = (0, 204, 255)
+
+greenyellow = (184, 255, 0)
+brightblue = (47, 228, 253)
+yellow = (255, 236, 0)
+purple = (252, 67, 255)
+
+colorChoices = [greenyellow, brightblue, yellow, purple]
 
 pygame.init()
 
@@ -28,6 +38,7 @@ def score(count):
 
 
 def blocks(x_block, y_block, block_width, block_height, gap):
+    colorChoice = colorChoices[randrange(0,len(colorChoices))]
     pygame.draw.rect(surface, green, [x_block, y_block, block_width, block_height])
     pygame.draw.rect(surface, green, [x_block, y_block+block_height+gap, block_width, surfaceHeight])
 
@@ -47,7 +58,7 @@ def replay_or_quit():
 
 
 def makeTextObjs(text, font):
-    textSurface = font.render(text, True, white)
+    textSurface = font.render(text, True, sunset)
     return textSurface, textSurface.get_rect()
 
 
@@ -114,10 +125,11 @@ def main():
 
         surface.fill(sky_blue)
         bird(x, y, bird_img)
-        score(current_score)
 
         blocks(x_block, y_block, block_width, block_height, gap)
         x_block -= block_move
+
+        score(current_score)
 
         if y > surfaceHeight - 40 or y < 0:
             gameOver()
@@ -125,26 +137,32 @@ def main():
         if x_block < (-1*block_width):
             x_block = surfaceWidth
             block_height = randint(0, (surfaceHeight / 2))
+            current_score += 1
 
         if x + imageWidth > x_block:
             if x < x_block + block_width:
-
                 if y < block_height:
-
                     if x - imageWidth < block_width + x_block:
-
                         gameOver()
 
         if x + imageWidth > x_block:
-
             if y + imageHeight > block_height + gap:
-
                 if x < block_width + x_block:
-
                     gameOver()
 
-        if x < x_block and x > x_block - block_move:
+
+        if x_block < (x - block_width) < x_block + block_move:
             current_score += 1
+
+        if 3 <= current_score < 5:
+            block_move = 6
+            gap = imageHeight * 3.6
+        if 5 <= current_score < 8:
+            block_move = 7
+            gap = imageHeight * 3.3
+        if 8 <= current_score < 14:
+            block_move = 8
+            gap = imageHeight * 3.0
 
         pygame.display.update()
         clock.tick(60)
