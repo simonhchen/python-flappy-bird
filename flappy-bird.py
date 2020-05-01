@@ -2,7 +2,6 @@ import pygame
 import time
 from random import randint
 
-black = (0, 0, 0)
 white = (255, 255, 255)
 green = (34, 139, 34)
 sky_blue = (0, 204, 255)
@@ -20,6 +19,12 @@ pygame.display.set_caption("flappy-bird")
 clock = pygame.time.Clock()
 
 bird_img = pygame.image.load("images/bird.png")
+
+
+def score(count):
+    font = pygame.font.Font("freesansbold.ttf", 20)
+    text = font.render("Score: " + str(count), True, white)
+    surface.blit(text, [0, 0])
 
 
 def blocks(x_block, y_block, block_width, block_height, gap):
@@ -48,14 +53,14 @@ def makeTextObjs(text, font):
 
 def msgSurface(text):
     smallText = pygame.font.Font("freesansbold.ttf", 20)
-    largeText = pygame.font.Font("freesansbold.ttf", 150)
+    largeText = pygame.font.Font("freesansbold.ttf", 125)
 
     titleTextSurf, titleTextRect = makeTextObjs(text, largeText)
     titleTextRect.center = surfaceWidth / 2, surfaceHeight / 2
     surface.blit(titleTextSurf, titleTextRect)
 
     typTextSurf, typTextRect = makeTextObjs('Press any key to continue.', smallText)
-    titleTextRect.center = surfaceWidth / 2, ((surfaceHeight / 2) + 100)
+    typTextRect.center = surfaceWidth / 2, ((surfaceHeight / 2) + 100)
     surface.blit(typTextSurf, typTextRect)
 
     pygame.display.update()
@@ -68,7 +73,7 @@ def msgSurface(text):
 
 
 def gameOver():
-    msgSurface("You fell!")
+    msgSurface("You crashed!")
 
 
 def bird(x, y, image):
@@ -85,8 +90,10 @@ def main():
 
     block_width = 75
     block_height = randint(0, (surfaceWidth / 2))
-    gap = imageHeight * 3
+    gap = imageHeight * 6
     block_move = 6
+
+    current_score = 0
 
     game_over = False
 
@@ -107,6 +114,7 @@ def main():
 
         surface.fill(sky_blue)
         bird(x, y, bird_img)
+        score(current_score)
 
         blocks(x_block, y_block, block_width, block_height, gap)
         x_block -= block_move
@@ -120,23 +128,23 @@ def main():
 
         if x + imageWidth > x_block:
             if x < x_block + block_width:
-                print("possibly within the boundaries of x")
+
                 if y < block_height:
-                    print("Y crossover UPPER!")
+
                     if x - imageWidth < block_width + x_block:
-                        print("game over hit upper")
+
                         gameOver()
 
         if x + imageWidth > x_block:
-            print("x crossover")
 
             if y + imageHeight > block_height + gap:
-                print("Y crossover lower")
 
                 if x < block_width + x_block:
-                    print('game over LOWER')
+
                     gameOver()
 
+        if x < x_block and x > x_block - block_move:
+            current_score += 1
 
         pygame.display.update()
         clock.tick(60)
