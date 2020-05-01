@@ -86,7 +86,7 @@ def main():
     block_width = 75
     block_height = randint(0, (surfaceWidth / 2))
     gap = imageHeight * 3
-    block_move = 3
+    block_move = 6
 
     game_over = False
 
@@ -117,6 +117,26 @@ def main():
         if x_block < (-1*block_width):
             x_block = surfaceWidth
             block_height = randint(0, (surfaceHeight / 2))
+
+        if x + imageWidth > x_block:
+            if x < x_block + block_width:
+                print("possibly within the boundaries of x")
+                if y < block_height:
+                    print("Y crossover UPPER!")
+                    if x - imageWidth < block_width + x_block:
+                        print("game over hit upper")
+                        gameOver()
+
+        if x + imageWidth > x_block:
+            print("x crossover")
+
+            if y + imageHeight > block_height + gap:
+                print("Y crossover lower")
+
+                if x < block_width + x_block:
+                    print('game over LOWER')
+                    gameOver()
+
 
         pygame.display.update()
         clock.tick(60)
